@@ -22,8 +22,24 @@ def new_id_gen():
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
-    """Post listing"""
-    return jsonify(POSTS)
+    """Post listing, user has option to sort by title or content"""
+
+    sort_arg = request.args.get('sort', '').strip().lower()
+    sort_direction = request.args.get('direction', 'asc').strip().lower()
+
+    if sort_arg and sort_arg not in ['title', 'content']:
+        return jsonify({"error": "Invalid sort input. Use 'title' or 'content' instead!"}), 400
+    if sort_direction not in ['asc', 'desc']:
+        return jsonify({"error": "Invalid sort direction. Use 'asc' or 'desc' instead!"}), 400
+
+    returned_posts = POSTS[:]
+
+    # If user wishes, sort
+    if sort_arg:
+        reverse = sort_direction == 'desc'
+        returned_posts.sort(key=lambda x: x[sort_arg].lower(), reverse=reverse)
+
+    return jsonify(returned_posts), 200
 
 
 @app.route('/api/posts', methods=['POST'])
