@@ -1,0 +1,193 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Masterblog API",
+    "version": "1.0.0",
+    "description": "API for managing blog posts - CRUD operations"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5002"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Post",
+      "description": "Operations related to blog posts"
+    }
+  ],
+  "paths": {
+    "/api/posts": {
+      "get": {
+        "summary": "Retrieve all posts",
+        "description": "Fetches all blog posts from the database",
+        "tags": ["Post"],
+        "responses": {
+          "200": {
+            "description": "A list of blog posts",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "First Post",
+                    "content": "This is the first post."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new post",
+        "description": "Creates a new blog post",
+        "tags": ["Post"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {"type": "string"},
+                  "content": {"type": "string"}
+                },
+                "required": ["title", "content"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created post",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 3,
+                  "title": "New Post",
+                  "content": "This is the content of the new post."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing fields"
+          }
+        }
+      }
+    },
+    "/api/posts/{id}": {
+      "delete": {
+        "summary": "Delete a post",
+        "description": "Deletes the post with the specified ID",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the post to delete",
+            "schema": {"type": "integer"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmation of deletion",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Post with id 3 has been deleted successfully."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a post",
+        "description": "Updates the post with the specified ID",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the post to update",
+            "schema": {"type": "integer"}
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {"type": "string"},
+                  "content": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated post",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 3,
+                  "title": "Updated Post",
+                  "content": "This is the updated content."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      }
+    },
+    "/api/posts/search": {
+      "get": {
+        "summary": "Search posts",
+        "description": "Searches for posts by title or content",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Title search term",
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "Content search term",
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of matching posts",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 2,
+                    "title": "Second Post",
+                    "content": "This is the second post."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
