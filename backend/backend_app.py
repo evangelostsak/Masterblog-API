@@ -28,7 +28,7 @@ def get_posts():
 
 @app.route('/api/posts', methods=['POST'])
 def add_post():
-    """Adding a post method"""
+    """Add Endpoint"""
     data = request.get_json()
 
     # Error handling part for title and content + strip for cleanup
@@ -56,14 +56,27 @@ def add_post():
 
 @app.route('/api/posts/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
-    """Delete method for post, ID based"""
+    """Delete endpoint for posts, ID based"""
     for post in POSTS:
         if post['id'] == post_id:
             POSTS.remove(post)
             return jsonify({"message": f"Post with id {post_id} has been successfully deleted."}), 200
-
-    # Error handling if wrong post id
+    # Error handling if wrong post id 404
     return jsonify({"error": f"Post with {post_id} not found."}), 404
+
+
+@app.route('/api/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    """Updates an existing post (title, content)"""
+    data = request.get_json()
+
+    for post in POSTS:
+        post['title'] = data.get('title', post['title']).strip()
+        post['content'] = data.get('content', post['content']).strip()
+
+        return jsonify(post), 200
+    # Error handling 404
+    return jsonify({"error": f"Post with id {post_id} not found."}), 404
 
 
 if __name__ == '__main__':
