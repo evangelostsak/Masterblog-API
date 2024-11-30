@@ -99,11 +99,14 @@ def update_post(post_id):
     """Updates an existing post (title, content)"""
     data = request.get_json()
 
+    # Finding the post by id (corrected)
     for post in POSTS:
-        post['title'] = data.get('title', post['title']).strip()
-        post['content'] = data.get('content', post['content']).strip()
+        if post["id"] == post_id:
+            # Updates title or content if wished for
+            post['title'] = data.get('title', post['title']).strip()
+            post['content'] = data.get('content', post['content']).strip()
 
-        return jsonify(post), 200
+            return jsonify(post), 200
     # Error handling 404
     return jsonify({"error": f"Post with id {post_id} not found."}), 404
 
